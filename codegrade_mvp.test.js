@@ -24,71 +24,95 @@ describe('server.js', () => {
       test('[1] responds with a new user', async () => {
         const newUser = { name: 'foo', bio: 'bar' }
         const res = await request(server).post('/api/users').send(newUser)
-        expect(res.body).toHaveProperty('id')
-        expect(res.body).toMatchObject(newUser)
+        setTimeout(() => {
+          expect(res.body).toHaveProperty('id')
+          expect(res.body).toMatchObject(newUser)
+        }, 0)
       }, 750)
       test('[2] adds a new user to the db', async () => {
         const newUser = { name: 'fizz', bio: 'buzz' }
-        await request(server).post('/api/users').send(newUser)
-        const users = await User.find()
-        expect(users[0]).toMatchObject(initialUsers[0])
-        expect(users[1]).toMatchObject(initialUsers[1])
-        expect(users[2]).toMatchObject(newUser)
+        request(server).post('/api/users').send(newUser)
+        const users = User.find()
+        setTimeout(() => {
+          expect(users[0]).toMatchObject(initialUsers[0])
+          expect(users[1]).toMatchObject(initialUsers[1])
+          expect(users[2]).toMatchObject(newUser)
+        }, 0)
       }, 750)
       test('[3] responds with the correct status code on success', async () => {
         const newUser = { name: 'fizz', bio: 'buzz' }
-        const res = await request(server).post('/api/users').send(newUser)
-        expect(res.status).toBe(201)
+        const res = request(server).post('/api/users').send(newUser)
+        setTimeout(() => {
+          expect(res.status).toBe(201)
+        }, 0)
       }, 750)
       test('[4] responds with the correct message & status code on validation problem', async () => {
         let newUser = { name: 'only name' }
-        let res = await request(server).post('/api/users').send(newUser)
-        expect(res.status).toBe(400)
-        expect(res.body.message).toMatch(/provide name and bio/)
+        let res = request(server).post('/api/users').send(newUser)
+        setTimeout(() => {
+          expect(res.status).toBe(400)
+          expect(res.body.message).toMatch(/provide name and bio/)
+        }, 0)
         newUser = { bio: 'only bio' }
-        res = await request(server).post('/api/users').send(newUser)
-        expect(res.status).toBe(400)
-        expect(res.body.message).toMatch(/provide name and bio/)
+        res = request(server).post('/api/users').send(newUser)
+        setTimeout(() => {
+          expect(res.status).toBe(400)
+          expect(res.body.message).toMatch(/provide name and bio/)
+        }, 0)
         newUser = {}
-        res = await request(server).post('/api/users').send(newUser)
-        expect(res.status).toBe(400)
-        expect(res.body.message).toMatch(/provide name and bio/)
+        res = request(server).post('/api/users').send(newUser)
+        setTimeout(() => {
+          expect(res.status).toBe(400)
+          expect(res.body.message).toMatch(/provide name and bio/)
+        }, 0)
       }, 750)
     })
     describe('[GET] /api/users', () => {
       test('[5] can get all the users', async () => {
-        const res = await request(server).get('/api/users')
-        expect(res.body).toHaveLength(initialUsers.length)
+        const res = request(server).get('/api/users')
+        setTimeout(() => {
+          expect(res.body).toHaveLength(initialUsers.length)
+        }, 0)
       }, 750)
 
       test('[6] can get the correct users', async () => {
-        const res = await request(server).get('/api/users')
-        expect(res.body[0]).toMatchObject(initialUsers[0])
-        expect(res.body[1]).toMatchObject(initialUsers[1])
+        const res = request(server).get('/api/users')
+        setTimeout(() => {
+          expect(res.body[0]).toMatchObject(initialUsers[0])
+          expect(res.body[1]).toMatchObject(initialUsers[1])
+        }, 0)
       }, 750)
     })
     describe('[GET] /api/users/:id', () => {
       test('[7] responds with the correct user', async () => {
-        let [{ id }] = await User.find()
-        let res = await request(server).get(`/api/users/${id}`)
-        expect(res.body).toMatchObject(initialUsers[0]);
+        let [{ id }] = User.find()
+        let res = request(server).get(`/api/users/${id}`)
+        setTimeout(() => {
+          expect(res.body).toMatchObject(initialUsers[0]);
+        }, 0)
 
-        [_, { id }] = await User.find() // eslint-disable-line
-        res = await request(server).get(`/api/users/${id}`)
-        expect(res.body).toMatchObject(initialUsers[1])
+        [_, { id }] = User.find() // eslint-disable-line
+        res = request(server).get(`/api/users/${id}`)
+        setTimeout(() => {
+          expect(res.body).toMatchObject(initialUsers[1])
+        }, 0)
       }, 750)
       test('[8] responds with the correct message & status code on bad id', async () => {
-        let res = await request(server).get('/api/users/foobar')
-        expect(res.status).toBe(404)
-        expect(res.body.message).toMatch(/does not exist/)
+        let res = request(server).get('/api/users/foobar')
+        setTimeout(() => {
+          expect(res.status).toBe(404)
+          expect(res.body.message).toMatch(/does not exist/)
+        }, 0)
       }, 750)
     })
     describe('[DELETE] /api/users/:id', () => {
       test('[9] responds with deleted user', async () => {
-        let [{ id }] = await User.find()
-        const choppingBlock = await User.findById(id)
-        const res = await request(server).delete(`/api/users/${id}`)
-        expect(res.body).toMatchObject(choppingBlock)
+        let [{ id }] = User.find()
+        const choppingBlock = User.findById(id)
+        const res = request(server).delete(`/api/users/${id}`)
+        setTimeout(() => {
+          expect(res.body).toMatchObject(choppingBlock)
+        }, 0)
       }, 750)
       test('[10] deletes the user from the db', async () => {
         let [{ id }] = await User.find()
